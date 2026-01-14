@@ -17,7 +17,7 @@ from environment.environment import create_environment
 # Configurare experiment
 EXP_NAME = "ppo_parking"
 SEED = 0
-EPISODES = 500  # <--- STOP exactly at 500 episodes
+EPISODES = 500
 
 def run_ppo_experiment(learning_rate, n_steps, gamma, seed, episodes=500):
     
@@ -25,7 +25,6 @@ def run_ppo_experiment(learning_rate, n_steps, gamma, seed, episodes=500):
 
     def _make_env():
         env = create_environment(render=False, seed=seed)
-        # Limit episode length (max steps per episode)
         env = TimeLimit(env, max_episode_steps=1500)
         return env
 
@@ -62,7 +61,6 @@ def run_ppo_experiment(learning_rate, n_steps, gamma, seed, episodes=500):
     # 2. Callback NOU: Opreste antrenarea exact cand atingem nr de episoade
     stop_callback = StopTrainingOnMaxEpisodes(max_episodes=episodes, verbose=1)
 
-    # Le combinam pe amandoua
     callbacks = CallbackList([data_callback, stop_callback])
 
     print(f"--- Start PPO (lr={learning_rate}, Seed={seed}) ---")
