@@ -1,7 +1,6 @@
 import os
 import sys
 import csv
-import gymnasium as gym
 from stable_baselines3 import PPO
 from stable_baselines3.common.callbacks import BaseCallback, CallbackList, StopTrainingOnMaxEpisodes
 from stable_baselines3.common.vec_env import DummyVecEnv, VecMonitor
@@ -12,7 +11,7 @@ PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
-from environment import create_environment
+from environment.environment import create_environment
 
 # Configurare experiment
 EXP_NAME = "ppo_parking"

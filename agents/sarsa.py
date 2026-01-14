@@ -1,19 +1,9 @@
-"""
-SARSA agent pentru environment-ul parking-v0 (Gymnasium / highway-env)
-
-Acest fisier:
-- implementeaza SARSA (algoritm tabular)
-- ruleaza experimente multiple
-- permite reglarea hiperparametrilor
-- salveaza rezultate pentru grafice si tabele
-"""
-
 import numpy as np
 import random
 import csv
 import os
 
-from environment import create_environment
+from environment.environment import create_environment
 
 #Discretizam starea( sarsa nu poate lucra cu stari continue -> transformam observatia in stare discreta(bins))
 NUM_BINS = 10
