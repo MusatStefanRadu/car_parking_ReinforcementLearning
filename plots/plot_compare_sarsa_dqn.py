@@ -1,4 +1,4 @@
-# plots/plot_compare_sarsa_dqn.py
+# plot_compare_sarsa_dqn.py
 import os
 import numpy as np
 import matplotlib.pyplot as plt

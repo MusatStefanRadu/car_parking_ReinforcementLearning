@@ -1,4 +1,4 @@
-# plots/plot_dqn_results.py
+# plot_dqn_results.py
 import os
 import numpy as np
 import matplotlib.pyplot as plt
