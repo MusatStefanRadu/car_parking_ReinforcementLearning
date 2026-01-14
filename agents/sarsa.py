@@ -5,57 +5,33 @@ import os
 
 from environment.environment import create_environment
 
-#Discretizam starea( sarsa nu poate lucra cu stari continue -> transformam observatia in stare discreta(bins))
-NUM_BINS = 10
+NUM_BINS = 16
 
 
 def discretize(value, min_val, max_val, bins=NUM_BINS):
     value = np.clip(value, min_val, max_val)
-    return int((value - min_val) / (max_val - min_val) * bins)
-
-
-def discretize_state(obs):
-    """
-    obs este un dictionar returnat de parking-v0.
-    Vectorul de stare real este in obs["observation"].
-    """
-
-    obs_vec = obs["observation"]
-
-    x, y = obs_vec[0], obs_vec[1]
-
-    # orientarea este data de cos(theta) si sin(theta)
-    cos_t, sin_t = obs_vec[4], obs_vec[5]
-    theta = np.arctan2(sin_t, cos_t)
-
-    return (
-        discretize(x, -1, 1),
-        discretize(y, -1, 1),
-        discretize(theta, -np.pi, np.pi)
-    )
+    idx = int((value - min_val) / (max_val - min_val) * bins)
+    return min(idx, bins - 1)
 
 
 
-#definim un set finit de actiuni pentru environment
 ACTIONS = [
-    np.array([ 1.0,  0.0]),   # inainte
-    np.array([-1.0,  0.0]),   # inapoi
-    np.array([ 0.0,  1.0]),   # stanga
-    np.array([ 0.0, -1.0]),   # dreapta
-    np.array([ 0.0,  0.0])    # stop
+    np.array([ 1.0,  0.0]),
+    np.array([-1.0,  0.0]),
+    np.array([ 0.0,  1.0]),
+    np.array([ 0.0, -1.0]),
+    np.array([ 0.0,  0.0])
 ]
 
 N_ACTIONS = len(ACTIONS)
 
 
-# 3. politica ε-greedy
 def choose_action(state, Q, epsilon):
     if random.random() < epsilon:
         return random.randrange(N_ACTIONS)
     return max(range(N_ACTIONS), key=lambda a: Q.get((state, a), 0.0))
 
 
-# rulam un experiment
 def run_sarsa_experiment(
     alpha,
     gamma,
@@ -63,14 +39,10 @@ def run_sarsa_experiment(
     epsilon_decay,
     seed,
     episodes=500,
-    max_steps=300
+    max_steps=150
 ):
-    """
-    Ruleaza un experiment SARSA cu un set fix de hiperparametri
-    si returneaza reward-ul total per episod.
-    """
 
-    # setam seed-urile pentru reproductibilitate
+
     random.seed(seed)
     np.random.seed(seed)
 
@@ -109,7 +81,6 @@ def run_sarsa_experiment(
             if done:
                 break
 
-        # scadem explorarea
         epsilon = max(0.05, epsilon * epsilon_decay)
         episode_rewards.append(total_reward)
 
@@ -118,12 +89,7 @@ def run_sarsa_experiment(
 
 
 
-# experimente multiple
 def run_all_experiments():
-    """
-    Ruleaza mai multe experimente SARSA cu hiperparametri diferiti
-    pentru analiza stabilitatii si convergentei.
-    """
 
     experiments = [
         {"alpha": 0.05, "gamma": 0.99, "epsilon": 1.0, "decay": 0.995},
@@ -152,6 +118,24 @@ def run_all_experiments():
                 writer.writerow(rewards)
 
             print(f"[OK] Experiment {exp_id}, seed {seed} salvat -> {filename}")
+
+def discretize_state(obs):
+    obs_vec = obs["observation"]
+
+    x, y = obs_vec[0], obs_vec[1]
+    vx, vy = obs_vec[2], obs_vec[3]
+
+    cos_t, sin_t = obs_vec[4], obs_vec[5]
+    theta = np.arctan2(sin_t, cos_t)
+
+    speed = np.sqrt(vx**2 + vy**2)
+
+    return (
+        discretize(x, -1, 1),
+        discretize(y, -1, 1),
+        discretize(theta, -np.pi, np.pi),
+        discretize(speed, 0.0, 1.0)
+    )
 
 
 if __name__ == "__main__":
