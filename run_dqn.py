@@ -42,7 +42,7 @@ def run_dqn_experiment(
     cfg: DQNConfig,
     seed: int,
     episodes: int = 500,
-    max_steps: int = 300,
+    max_steps: int = 150,
 ):
     random.seed(seed)
     np.random.seed(seed)
