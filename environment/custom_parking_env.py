@@ -56,7 +56,6 @@ class CustomParkingRewardWrapper(gym.Wrapper):
 
         return obs, reward, terminated, truncated, info
 
-
     def _distance_to_goal(self, obs):
         obs_vec = obs["observation"]
         x, y = obs_vec[0], obs_vec[1]
